@@ -83,7 +83,19 @@ int main( int argc, char** argv )
 	/*
 	 * create the camera device
 	 */
-	gstCamera* camera = gstCamera::Create(DEFAULT_CAMERA);
+	// gstCamera* camera = gstCamera::Create(DEFAULT_CAMERA);
+
+        auto camera_index = DEFAULT_CAMERA;
+        try {
+           camera_index = std::stoi(argv[argc-1]);
+        }
+        catch(...) {
+            printf("\ndetectnet-camera:  failed to convert last argument to int (video device index). Will use default camera (-1).\n");
+        }
+
+        // if no args are passed, default is onboard camera
+        // gstCamera* camera = gstCamera::Create(camera_index);
+        gstCamera* camera = gstCamera::Create(640, 480, camera_index);
 	
 	if( !camera )
 	{
@@ -100,7 +112,8 @@ int main( int argc, char** argv )
 	/*
 	 * create detectNet
 	 */
-	detectNet* net = detectNet::Create(argc, argv);
+	// detectNet* net = detectNet::Create(argc, argv);
+        detectNet* net = detectNet::Create(argc - 1, argv);
 	
 	if( !net )
 	{
